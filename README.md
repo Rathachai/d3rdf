@@ -1,4 +1,4 @@
 # d3rdf
 Visualizing triple using D3.
 
-View [//http://rathachai.github.io/d3rdf/:http://rathachai.github.io/d3rdf/]
+View http://rathachai.github.io/d3rdf/
