@@ -12,6 +12,4 @@ This project uses force layout of D3 to visualize the expresion subject–predic
 ![alt tag](https://raw.github.com/rathachai/d3rdf/master/images/simpletriples.png)
 
 ## References
-1. Force-Directed Graph http://bl.ocks.org/mbostock/4062045
-
-    gem install github-markup
+0. Force-Directed Graph http://bl.ocks.org/mbostock/4062045
