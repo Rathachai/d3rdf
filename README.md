@@ -1,10 +1,10 @@
 # D3RDF
 
 ## Description
-This project uses force layout of D3<sup>1</sup> to visualize the expresion subject–predicate–object, which is as known as triple in RDF terminology, in semantic web and linked data. It is implemented on top of the Force-Directed Graph<sup>2</sup> by adding a label for every node (resource: subject or object), and an arrow and a label for every edge (predicate).
+This project uses force layout of D3<sup>1</sup> to visualize the expression "subject–predicate–object", a.k.a. a triple in RDF terminology, under semantic web and linked data domains. It is implemented on top of the Force-Directed Graph<sup>2</sup> by adding a label for every node (resource: subject or object), and an arrow and a label for every edge (predicate).
 
 ## Codes
-- Visualization of Triples : http://rathachai.github.io/d3rdf/index.html
+- Simple Visualization of Triples : http://rathachai.github.io/d3rdf/index.html
 - [TBD]
 - [TBD]
 
