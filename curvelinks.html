@@ -79,10 +79,10 @@
 				
 				var blankLabel = "";
 				
-				graph.links.push({source:subjNode, target:predNode, blankLabel, weight:1});
-				graph.links.push({source:predNode, target:objNode, blankLabel, weight:1});
+				graph.links.push({source:subjNode, target:predNode, predicate:blankLabel, weight:1});
+				graph.links.push({source:predNode, target:objNode, predicate:blankLabel, weight:1});
 				
-				graph.triples.push({s:subjNode, p:predNode, o:objNode})
+				graph.triples.push({s:subjNode, p:predNode, o:objNode});
 				
 			});
 			
