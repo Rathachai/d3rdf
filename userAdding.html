@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>D3RDF : Adding</title>
+	<meta name="author" content="Rathachai CHAWUTHAI">
+	
+	<style type="text/css">
+		.node {
+		  stroke: #fff;
+		  fill:#ddd;
+		  stroke-width: 1.5px;
+		}
+
+		.link {
+		  fill: none;
+		  stroke: #999;
+		  stroke-opacity: .6;
+		}
+
+		marker {
+			stroke: #999;
+			fill:rgba(124,240,10,0);
+		}
+
+		.node-text {
+		  font: 11px sans-serif;
+		  fill:black;
+		}
+
+		.link-text {
+		  font: 9px sans-serif;
+		  fill:grey;
+		}
+		
+		svg{
+			border:1px solid black;
+		}
+	</style>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script>
+		function filterNodesById(nodes,id){
+			return nodes.filter(function(n) { return n.id === id; });
+		}
+		
+		function filterNodesByType(nodes,value){
+			return nodes.filter(function(n) { return n.type === value; });
+		}
+		
+		function triplesToGraph(triples){
+		
+			svg.html("");
+			//Graph
+			var graph={nodes:[], links:[], triples:[]};
+			
+			//Initial Graph from triples
+			triples.forEach(function(triple){
+				var subjId = triple.subject;
+				var predId = triple.predicate;
+				var objId = triple.object;
+				
+				var subjNode = filterNodesById(graph.nodes, subjId)[0];
+				var objNode  = filterNodesById(graph.nodes, objId)[0];
+				
+				if(subjNode==null){
+					subjNode = {id:subjId, label:subjId, weight:1, type:"node"};
+					graph.nodes.push(subjNode);
+				}
+				
+				if(objNode==null){
+					objNode = {id:objId, label:objId, weight:1, type:"node"};
+					graph.nodes.push(objNode);
+				}
+				
+				var predNode = {id:predId, label:predId, weight:1, type:"pred"} ;
+				graph.nodes.push(predNode);
+				
+				var blankLabel = "";
+				
+				graph.links.push({source:subjNode, target:predNode, blankLabel, weight:1});
+				graph.links.push({source:predNode, target:objNode, blankLabel, weight:1});
+				
+				graph.triples.push({s:subjNode, p:predNode, o:objNode})
+				
+			});
+			
+			return graph;
+		}
+		
+		function addNewTriple(){
+			var subj = $("#subject").val();
+			var pred = $("#predicate").val();
+			var obj  = $("#object").val();
+			
+			triples.push({ subject:subj , 	predicate:pred , 	object:obj });
+			graph = triplesToGraph(triples);
+			update();
+		}
+		
+		
+		function update(){
+			// ==================== Add Marker ====================
+			svg.append("svg:defs").selectAll("marker")
+			    .data(["end"])
+			  .enter().append("svg:marker")
+			    .attr("id", String)
+			    .attr("viewBox", "0 -5 10 10")
+			    .attr("refX", 30)
+			    .attr("refY", -0.5)
+			    .attr("markerWidth", 6)
+			    .attr("markerHeight", 6)
+			    .attr("orient", "auto")
+			  .append("svg:polyline")
+			    .attr("points", "0,-5 10,0 0,5")
+			    ;
+				
+			// ==================== Add Links ====================
+			 var links = svg.selectAll(".link")
+								.data(graph.triples)
+								.enter()
+								.append("path")
+									.attr("marker-end", "url(#end)")
+									.attr("class", "link")
+							;
+									
+			// ==================== Add Link Names =====================
+			var linkTexts = svg.selectAll(".link-text")
+		                .data(graph.triples)
+		                .enter()
+		                .append("text")
+							.attr("class", "link-text")
+							.text( function (d) { return d.p.label; })
+						;
+
+				//linkTexts.append("title")
+				//		.text(function(d) { return d.predicate; });
+						
+			// ==================== Add Link Names =====================
+			var nodeTexts = svg.selectAll(".node-text")
+		                .data(filterNodesByType(graph.nodes, "node"))
+		                .enter()
+		                .append("text")
+							.attr("class", "node-text")
+							.text( function (d) { return d.label; })
+						;
+
+				//nodeTexts.append("title")
+				//		.text(function(d) { return d.label; });
+			
+			// ==================== Add Node =====================
+			var nodes = svg.selectAll(".node")
+								.data(filterNodesByType(graph.nodes, "node"))
+								.enter()
+								.append("circle")
+									.attr("class", "node")
+									.attr("r",8)
+									.call(force.drag)
+							;//nodes
+		
+			// ==================== Force ====================
+			force.on("tick", function() {
+				nodes
+					.attr("cx", function(d){ return d.x; })
+					.attr("cy", function(d){ return d.y; })
+					;
+				
+				links
+					.attr("d", function(d) {
+						  return "M" 	+ d.s.x + "," + d.s.y
+										+ "S" + d.p.x + "," + d.p.y
+										+ " " + d.o.x + "," + d.o.y;
+						})
+					;
+								   
+				nodeTexts
+					.attr("x", function(d) { return d.x + 12 ; })
+					.attr("y", function(d) { return d.y + 3; })
+					;
+					
+
+				linkTexts
+					.attr("x", function(d) { return 4 + (d.s.x + d.p.x + d.o.x)/3  ; })
+					.attr("y", function(d) { return 4 + (d.s.y + d.p.y + d.o.y)/3 ; })
+					;
+			});
+			
+			// ==================== Run ====================
+			force
+		      .nodes(graph.nodes)
+		      .links(graph.links)
+			  .charge(-500)
+			  .linkDistance(50)
+		      .start()
+			  ;
+		}
+		
+		
+	</script>
+</head>
+<body style="margin:20px;">
+  <h1>Visualizing RDF using D3 : User-Adding Triples</h1>
+  
+  <div style="padding:10px; border:1px solid #555; margin:10px auto;">
+	triples.push( { subject =  <input type="text" id="subject" value="ex:lemon"> , predicate = <input type="text" id="predicate" value="rdf:type"> , object = <input type="text" id="object" value="ex:Vegetable"> } );
+	<br/>graph = triplesToGraph(triples);
+	<br/>update();
+	<br/><button type="button" onclick="addNewTriple();" > Run! </button>
+  </div>
+  
+  <div id="svg-body" class="panel-body"></div>
+  <script>
+  	var triples = [
+  			{subject:"ex:ThaiLand", 	predicate:"ex:hasFood", 	object:"ex:TomYumKung"},
+			{subject:"ex:TomYumKung", 	predicate:"ex:isFoodOf", 	object:"ex:ThaiLand"},
+  			{subject:"ex:TomYumKung", 	predicate:"rdf:type", 		object:"ex:SpicyFood"},
+  			{subject:"ex:TomYumKung", 	predicate:"ex:includes", 	object:"ex:shrimp"},
+  			{subject:"ex:TomYumKung", 	predicate:"ex:includes", 	object:"ex:chilly"},
+			{subject:"ex:TomYumKung", 	predicate:"ex:requires", 	object:"ex:chilly"},
+			{subject:"ex:TomYumKung", 	predicate:"ex:hasSpicy", 	object:"ex:chilly"},
+  			{subject:"ex:TomYumKung", 	predicate:"ex:includes", 	object:"ex:lemon"},
+  			{subject:"ex:lemon", 		predicate:"ex:hasTaste", 	object:"ex:sour"},
+  			{subject:"ex:chilly", 		predicate:"ex:hasTaste", 	object:"ex:spicy"}
+  		];
+		
+	var svg = d3.select("#svg-body").append("svg")
+				.attr("width", 800)
+				.attr("height", 600)
+				;
+				
+	var force = d3.layout.force().size([800, 600]);
+	
+	var graph = triplesToGraph(triples);
+	
+	update();
+	
+  </script>
+ 
+  
+  <footer style="margin-top:40px; padding:20px; height:50px; border-top:1px solid #eee; background:#fafafa; text-align:center">
+	By: <strong>Rathachai Chawuthai</strong>
+	<br/>
+	<a target="_blank" href="https://github.com/Rathachai">GitHub</a> | <a target="_blank" href="https://www.linkedin.com/in/rathachai">LinkedIn</a>
+  </footer>
+  
+</body>
