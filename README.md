@@ -12,6 +12,9 @@ This project uses force layout of D3<sup>1</sup> to visualize the expression "su
 ## Example
 ![alt tag](https://raw.github.com/rathachai/d3rdf/master/images/simpletriples.png)
 
+## Citation
+Chawuthai, R., & Takeda, H.: Rdf graph visualization by interpreting linked data as knowledge. In Joint International Semantic Technology Conference (pp. 23-39). Springer, 2015.
+
 ## References
 0. D3 : http://d3js.org/
 0. Force-Directed Graph : http://bl.ocks.org/mbostock/4062045
