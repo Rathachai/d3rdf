@@ -14,6 +14,7 @@ This project uses force layout of D3<sup>1</sup> to visualize the expression "su
 
 ## Citation
 **Please refer to :**
+
 Chawuthai, R., & Takeda, H.: Rdf graph visualization by interpreting linked data as knowledge. In Joint International Semantic Technology Conference (pp. 23-39). Springer, 2015.
 
 ## References
