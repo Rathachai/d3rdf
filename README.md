@@ -7,7 +7,9 @@ This project uses force layout of D3<sup>1</sup> to visualize the expression "su
 - Visualization of Triples : http://rathachai.github.io/d3rdf/index.html
 - Curve Links : http://rathachai.github.io/d3rdf/curvelinks.html
 - User Adding Triples : http://rathachai.github.io/d3rdf/userAdding.html
-- [TBD]
+
+## **Announcement**
+- The new version for Colab https://github.com/Rathachai/rdfviz/blob/main/ex/rdfviz-examples.ipynb
 
 ## Example
 ![alt tag](https://raw.github.com/rathachai/d3rdf/master/images/simpletriples.png)
